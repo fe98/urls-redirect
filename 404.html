@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Redirecting...</title>
-</head>
-<body>
   <script>
-    const repoName = "urls-redirect"; // ← CHANGE THIS
+    const repoName = "repository-name"; // ← CHANGE THIS
 
+    // Path logic
     const fullPath = window.location.pathname.replace(/^\/|\/$/g, '');
     const shortCode = fullPath.startsWith(repoName)
       ? fullPath.replace(repoName + "/", "")
       : fullPath;
 
+    // Fetch the CSV and look up the URL
     fetch("/" + repoName + "/links.csv")
       .then(response => response.text())
       .then(data => {
@@ -26,8 +26,9 @@
         });
 
         if (routes[shortCode]) {
-          window.location.replace(routes[shortCode]);
+          window.location.replace(routes[shortCode]);  // Instant redirect
         } else {
+          // Optionally, you can show a minimal message if needed:
           document.body.innerHTML = "<h1>404 - Short link not found</h1>";
         }
       })
@@ -35,6 +36,7 @@
         document.body.innerHTML = "<h1>Error loading link database</h1>";
       });
   </script>
+</head>
+<body>
 </body>
-
 </html>
