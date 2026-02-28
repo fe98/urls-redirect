@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+</head>
+<body>
+  <script>
+    const repoName = "repository-name"; // ← CHANGE THIS
+
+    const fullPath = window.location.pathname.replace(/^\/|\/$/g, '');
+    const shortCode = fullPath.startsWith(repoName)
+      ? fullPath.replace(repoName + "/", "")
+      : fullPath;
+
+    fetch("/" + repoName + "/links.csv")
+      .then(response => response.text())
+      .then(data => {
+        const lines = data.split("\n").slice(1);
+        const routes = {};
+
+        lines.forEach(line => {
+          if (!line.trim()) return;
+          const [slug, url] = line.split(",");
+          routes[slug.trim()] = url.trim();
+        });
+
+        if (routes[shortCode]) {
+          window.location.replace(routes[shortCode]);
+        } else {
+          document.body.innerHTML = "<h1>404 - Short link not found</h1>";
+        }
+      })
+      .catch(() => {
+        document.body.innerHTML = "<h1>Error loading link database</h1>";
+      });
+  </script>
+</body>
+</html>
